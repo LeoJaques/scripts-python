@@ -18,6 +18,9 @@ for i, v in enumerate(folders):
 resp = int(input('Digite o número do arquivo: '))
 
 data = folders[resp-1].split(' - ')[-1].replace('.xlsx', '')
+
+os.makedirs(str(data), exist_ok=True)
+
 # ler o arquivo
 df = pd.read_excel(folders[resp-1], header=4)
 df = df[df['Tipo'].str.contains('CCEAR')]
@@ -32,7 +35,7 @@ try:
 except:
     pass
 finally:
-    df.to_excel(f'PREVIA CCEAR - {data}.xlsx', index=False)
+    df.to_excel(f'{data}/PREVIA CCEAR - {data}.xlsx', index=False)
 
 # separar phanilhas CCEAR
 bradesco_df = df.loc[(df['Banco'] == 'Bradesco')].copy()
@@ -40,18 +43,19 @@ bb_df = df.loc[(df['Banco'] == 'Banco Brasil')].copy()
 
 
 # exportar arquivos
-bradesco_df.to_excel(f'CCEAR - BRA - {data}.xlsx', index=False)
-bb_df.to_excel(f'CCEAR - BB - {data}.xlsx', index=False)
+bradesco_df.to_excel(f'{data}/CCEAR - BRA - {data}.xlsx', index=False)
+bb_df.to_excel(f'{data}/CCEAR - BB - {data}.xlsx', index=False)
 
-arquivos = [f'CCEAR - BB - {data}.xlsx',
-            f'CCEAR - BRA - {data}.xlsx', f'PREVIA CCEAR - {data}.xlsx']
+arquivos = [f'{data}/CCEAR - BB - {data}.xlsx',
+            f'{data}/CCEAR - BRA - {data}.xlsx', f'{data}/PREVIA CCEAR - {data}.xlsx']
 
 
 # Ajustar o cabeçalho e adicionar bordas
 for i in arquivos:
     book = load_workbook(i)
     sheet = book.active
-
+    book.properties.creator = "Leonardo Jaques"
+    book.properties.lastModifiedBy = "Leonardo Jaques"
     # Definir a altura da linha do cabeçalho
     sheet.row_dimensions[1].height = 30
 
